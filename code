@@ -1,1 +1,29 @@
+#Email Spam Classification
+#Momina Haroon
+# Step 1: Libraries import karo
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+# Step 2: Dataset load karo
+data = pd.read_csv('spam.csv', encoding='latin-1')[['v1', 'v2']]
+data.columns = ['label', 'text']  # Rename columns
+# Step 3: Label encode karo (ham = 0, spam = 1)
+data['label'] = data['label'].map({'ham': 0, 'spam': 1})
+# Step 4: Train-test split
+X_train, X_test, y_train, y_test = train_test_split(data['text'], data['label'], test_size=0.2)
+# Step 5: Text vectorize karo
+vectorizer = TfidfVectorizer()
+X_train_vec = vectorizer.fit_transform(X_train)
+X_test_vec = vectorizer.transform(X_test)
+# Step 6: Model train karo
+model = MultinomialNB()
+model.fit(X_train_vec, y_train)
+# Step 7: Predict aur evaluate karo
+y_pred = model.predict(X_test_vec)
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
 
